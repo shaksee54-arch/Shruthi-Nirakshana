@@ -1,0 +1,2734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shruthi Nirakshana | Spider-Man Multiverse Portfolio</title>
+    <meta name="description"
+        content="Spider-Man themed interactive portfolio of Shruthi Nirakshana, featuring realistic eye animations, multiverse bio dashboard, and web-shooter mini-game.">
+
+    <!-- Google Fonts for Marvel Logo and futuristic Sci-Fi UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Oswald:wght@400;700&family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;800&family=Great+Vibes&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS STYLING SYSTEM (Combined into single file) */
+        :root {
+            --spidey-red: #e62429;
+            --spidey-red-glow: rgba(230, 36, 41, 0.6);
+            --spidey-blue: #0055ff;
+            --spidey-blue-glow: rgba(0, 85, 255, 0.6);
+            --spidey-dark: #050508;
+            --spidey-navy: #0d1326;
+            --accent-gold: #ffd700;
+            --accent-gold-glow: rgba(255, 215, 0, 0.6);
+            --text-white: #ffffff;
+            --text-muted: #a0a5c0;
+            --glass-bg: rgba(13, 19, 38, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--spidey-dark);
+            color: var(--text-white);
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--spidey-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--spidey-red);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff3338;
+        }
+
+        /* Sound Effect Button */
+        #sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-white);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #sound-toggle:hover {
+            border-color: var(--spidey-red);
+            box-shadow: 0 0 15px var(--spidey-red-glow);
+            transform: scale(1.1);
+        }
+
+        /* 1. INTRO SCREEN */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #030305;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+
+        .intro-background-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(230, 36, 41, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+            pointer-events: none;
+        }
+
+        /* Mechanical Eyes */
+        #spidey-mask-eyes {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            max-width: 600px;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .eye-container {
+            width: 250px;
+            filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.8));
+            transition: transform 0.3s ease;
+        }
+
+        .eye-container:hover {
+            transform: scale(1.03);
+        }
+
+        .spidey-eye {
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        /* Outer frame - metallic Spidey mask feel */
+        .eye-frame {
+            fill: #141416;
+            stroke: #0a0a0c;
+            stroke-width: 3;
+        }
+
+        /* Glowing Inner Lens */
+        .eye-lens {
+            fill: #ffffff;
+            transition: fill 0.5s ease;
+        }
+
+        /* homecoming mechanical shutters */
+        .shutter {
+            fill: #1e1e24;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* shutter line overlay */
+        .shutter-line {
+            stroke: rgba(0, 0, 0, 0.25);
+            stroke-width: 2.5;
+        }
+
+        /* Shutter transitions based on active eye class */
+        #spidey-mask-eyes.closed .shutter-top {
+            transform: translateY(22px) rotate(2deg);
+        }
+
+        #spidey-mask-eyes.closed .shutter-bottom {
+            transform: translateY(-22px) rotate(-2deg);
+        }
+
+        /* Default state: slightly squinted (Homecoming starting look) */
+        .shutter-top {
+            transform: translateY(12px);
+        }
+
+        .shutter-bottom {
+            transform: translateY(-12px);
+        }
+
+        /* Squint transition (trigger right before opening) */
+        #spidey-mask-eyes.squint .shutter-top {
+            transform: translateY(28px) scaleY(1.1);
+        }
+
+        #spidey-mask-eyes.squint .shutter-bottom {
+            transform: translateY(-28px) scaleY(1.1);
+        }
+
+        /* Wide Open suit initialization */
+        #spidey-mask-eyes.open .shutter-top {
+            transform: translateY(-60px);
+        }
+
+        #spidey-mask-eyes.open .shutter-bottom {
+            transform: translateY(60px);
+        }
+
+        #spidey-mask-eyes.open .eye-lens {
+            fill: #fcfcfc;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+        }
+
+        /* Tap instruction text */
+        #tap-instruction {
+            position: absolute;
+            bottom: 12%;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .pulse-text {
+            animation: textPulse 2s infinite;
+        }
+
+        @keyframes textPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+            }
+
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        /* MARVEL TITLE CARD STYLE */
+        #marvel-title-card {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        #marvel-title-card.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .marvel-title-container {
+            border: 3px solid #ffffff;
+            padding: 8px 12px;
+            background-color: var(--spidey-red);
+            box-shadow: 0 10px 40px rgba(230, 36, 41, 0.5), 0 0 100px rgba(0, 0, 0, 0.8);
+            transform: skewX(-6deg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Flipbook effect inside the Marvel logo */
+        .marvel-box {
+            position: relative;
+            padding: 5px 25px;
+            background: linear-gradient(135deg, rgba(230, 36, 41, 1) 0%, rgba(200, 20, 25, 1) 100%);
+        }
+
+        .marvel-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.15),
+                    rgba(0, 0, 0, 0.15) 1px,
+                    transparent 1px,
+                    transparent 2px);
+            pointer-events: none;
+        }
+
+        .marvel-text {
+            font-family: 'League Gothic', sans-serif;
+            font-size: 7.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -3px;
+            display: block;
+            line-height: 0.9;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Comic strip panel glitch/flip inside red block */
+        .marvel-box::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent 45%, rgba(255, 255, 255, 0.15) 50%, transparent 55%);
+            animation: marvelSweep 4s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes marvelSweep {
+            0% {
+                transform: translate(-30%, -30%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(30%, 30%) rotate(0deg);
+            }
+        }
+
+        .marvel-sub-title {
+            margin-top: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: glowTextPulse 2s infinite alternate;
+        }
+
+        @keyframes glowTextPulse {
+            0% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+            }
+
+            100% {
+                text-shadow: 0 0 15px var(--spidey-red-glow);
+                color: #fff;
+            }
+        }
+
+        /* Web button style */
+        #web-swing-btn,
+        .web-btn {
+            margin-top: 35px;
+            padding: 14px 35px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #ffffff;
+            background: transparent;
+            border: 2px solid var(--spidey-red);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(230, 36, 41, 0.2);
+        }
+
+        #web-swing-btn::before,
+        .web-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        #web-swing-btn:hover,
+        .web-btn:hover {
+            background-color: var(--spidey-red);
+            box-shadow: 0 0 25px var(--spidey-red-glow), 0 0 50px rgba(230, 36, 41, 0.3);
+            transform: translateY(-3px);
+        }
+
+        #web-swing-btn:hover::before,
+        .web-btn:hover::before {
+            left: 100%;
+        }
+
+        #web-swing-btn i {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        #web-swing-btn:hover i {
+            transform: rotate(45deg) scale(1.2);
+        }
+
+        /* Zooming Animation during eye transition */
+        .eye-zoom-animation {
+            transform: scale(25) !important;
+            opacity: 0;
+        }
+
+        /* 2. TRANSITION WEB CANVAS */
+        #transition-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* 3. MAIN PORTFOLIO DASHBOARD */
+        #portfolio-dashboard {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s cubic-bezier(0.1, 0.8, 0.3, 1), transform 1s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        #portfolio-dashboard.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Starfield / Multiverse Space canvas behind everything */
+        #space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header styling */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 40px;
+            background: rgba(5, 5, 8, 0.6);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-spider-icon {
+            font-size: 2rem;
+            color: var(--spidey-red);
+            animation: floatSpidey 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatSpidey {
+            0% {
+                transform: translateY(-3px) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(3px) rotate(15deg);
+            }
+        }
+
+        .glow-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #ffffff 0%, var(--spidey-red) 70%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--spidey-red-glow);
+        }
+
+        .dashboard-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 10px 22px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-btn.active {
+            color: #ffffff;
+            background: var(--spidey-red);
+            border-color: var(--spidey-red);
+            box-shadow: 0 0 15px var(--spidey-red-glow);
+        }
+
+        /* Sections management */
+        section.dashboard-grid {
+            display: none;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: all 0.5s ease-out;
+        }
+
+        section.dashboard-grid.active {
+            display: grid;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Grid arrangements */
+        #bio-section.dashboard-grid {
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        #game-section.dashboard-grid {
+            grid-template-columns: 1fr;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Card Styling (Glassmorphic) */
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .glow-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 255, 255, 0.05);
+        }
+
+        .glow-card-red:hover {
+            transform: translateY(-5px);
+            border-color: var(--spidey-red);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--spidey-red-glow);
+        }
+
+        .glow-card-blue:hover {
+            transform: translateY(-5px);
+            border-color: var(--spidey-blue);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--spidey-blue-glow);
+        }
+
+        .glow-card-gold:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-gold-glow);
+        }
+
+        /* PROFILE CARD (LEFT) */
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: fit-content;
+        }
+
+        /* Multiverse Portal Ring around profile image */
+        .portal-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .portal-ring {
+            position: absolute;
+            width: 104%;
+            height: 104%;
+            border-radius: 50%;
+            border: 3px dashed var(--accent-gold);
+            animation: rotatePortal 12s linear infinite;
+            box-shadow: 0 0 20px var(--accent-gold-glow), inset 0 0 20px var(--accent-gold-glow);
+            opacity: 0.8;
+        }
+
+        @keyframes rotatePortal {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .portal-spark-canvas-container {
+            position: absolute;
+            width: 140%;
+            height: 140%;
+            top: -20%;
+            left: -20%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #portal-sparks {
+            width: 100%;
+            height: 100%;
+        }
+
+        .profile-img-container {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            border: 3px solid #ffffff;
+            z-index: 2;
+            background: #111;
+        }
+
+        #profile-pic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        /* Hover glitch/suit overlay on image */
+        .spidey-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(230, 36, 41, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            backdrop-filter: hue-rotate(180deg);
+        }
+
+        .profile-img-container:hover #profile-pic {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .profile-img-container:hover .spidey-overlay {
+            opacity: 1;
+        }
+
+        .glitch-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 2px 2px var(--spidey-blue);
+            animation: textGlitch 0.4s steps(2) infinite;
+        }
+
+        @keyframes textGlitch {
+
+            0%,
+            100% {
+                transform: translate(0);
+                text-shadow: 1px 1px var(--spidey-blue), -1px -1px var(--spidey-red);
+            }
+
+            50% {
+                transform: translate(-2px, 1px);
+                text-shadow: -1px 2px var(--spidey-red), 2px -1px var(--spidey-blue);
+            }
+        }
+
+        .profile-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-college {
+            font-size: 0.9rem;
+            color: var(--text-white);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .profile-college i,
+        .profile-dept i {
+            color: var(--spidey-red);
+            margin-right: 6px;
+        }
+
+        .profile-dept {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .hero-stats {
+            width: 100%;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .text-red {
+            color: var(--spidey-red);
+        }
+
+        .text-blue {
+            color: #00bfff;
+        }
+
+        .text-gold {
+            color: var(--accent-gold);
+        }
+
+        /* MULTIVERSE DETAILS GRID (RIGHT) */
+        .multiverse-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .detail-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-universe-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            padding: 3px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+        }
+
+        .detail-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 12px;
+        }
+
+        .detail-card h3 i {
+            color: var(--spidey-red);
+        }
+
+        /* 1. Academic Marks details */
+        .marks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .mark-progress-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .mark-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .mark-number {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+        }
+
+        .mark-number small {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            box-shadow: 0 0 10px currentColor;
+            transition: width 1.5s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        .bg-red {
+            background-color: var(--spidey-red);
+            color: var(--spidey-red);
+        }
+
+        .bg-blue {
+            background-color: #00bfff;
+            color: #00bfff;
+        }
+
+        .bg-gold {
+            background-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        /* 2. Hero Achievements */
+        .achievements-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .achievements-list li {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .achievement-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 85, 255, 0.1);
+            border: 1px solid rgba(0, 85, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #00bfff;
+            box-shadow: 0 0 10px rgba(0, 85, 255, 0.2);
+        }
+
+        .achievement-info h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .achievement-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 3. Skills Flex */
+        .skills-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill-tag {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            color: var(--accent-gold);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: rgba(255, 215, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
+        }
+
+        .cursive-font-trigger {
+            border-color: var(--spidey-red);
+            color: #ff3c43;
+            background: rgba(230, 36, 41, 0.05);
+        }
+
+        .cursive-font-trigger:hover {
+            background: rgba(230, 36, 41, 0.15);
+            box-shadow: 0 5px 15px rgba(230, 36, 41, 0.1);
+        }
+
+        /* Cursive Text Animation */
+        .cursive-writing-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.5s ease;
+        }
+
+        .cursive-writing-container p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .cursive-writing-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            animation: drawCursive 2s ease-out forwards;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            border-right: 2px solid var(--spidey-red);
+        }
+
+        @keyframes drawCursive {
+            0% {
+                width: 0;
+                border-right-color: var(--spidey-red);
+            }
+
+            99% {
+                border-right-color: var(--spidey-red);
+            }
+
+            100% {
+                width: 100%;
+                border-right-color: transparent;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 4. Explorer Destinations grid */
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .destination-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .destination-item:hover {
+            background: rgba(230, 36, 41, 0.05);
+            border-color: rgba(230, 36, 41, 0.3);
+            transform: scale(1.03);
+        }
+
+        .dest-flag {
+            font-size: 1.4rem;
+        }
+
+        .dest-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* 5. Hobbies, Books, Languages */
+        .hobbies-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .hobbies-split h4 {
+            font-size: 0.85rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .langs-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lang-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .lang-pill i {
+            color: #00bfff;
+            margin-right: 6px;
+        }
+
+        .hobby-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hobby-list li {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* GAME SECTION */
+        .game-wrapper-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .game-header {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .game-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px var(--spidey-red-glow);
+        }
+
+        .game-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .game-container-panel {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Color selector for shooting webs */
+        .web-color-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .color-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .web-colors {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .color-btn.active {
+            transform: scale(1.3);
+            outline: 2px solid #ffffff;
+            outline-offset: 1px;
+        }
+
+        /* Game Canvas container styling */
+        .game-canvas-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            border: 2px solid var(--glass-border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: radial-gradient(circle, #0b1122 0%, #03050c 100%);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        /* Game overlays (Start/Gameover) */
+        #game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay-content {
+            text-align: center;
+            padding: 40px;
+            max-width: 450px;
+        }
+
+        .overlay-content h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--spidey-red);
+            text-shadow: 0 0 20px var(--spidey-red-glow);
+            margin-bottom: 10px;
+        }
+
+        .overlay-content p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        /* Game HUD overlay styling */
+        .game-hud {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .hud-item {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            background: rgba(5, 5, 8, 0.7);
+            padding: 6px 15px;
+            border-radius: 4px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+        }
+
+        /* RESPONSIVENESS AND MEDIA QUERIES */
+        @media (max-width: 1100px) {
+            #bio-section.dashboard-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .profile-card {
+                max-width: 450px;
+                margin: 0 auto;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .multiverse-details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-canvas-container {
+                width: 100%;
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            #spidey-mask-eyes {
+                gap: 15px;
+                max-width: 320px;
+            }
+
+            .eye-container {
+                width: 130px;
+            }
+
+            .marvel-text {
+                font-size: 3.5rem;
+                letter-spacing: -1px;
+            }
+
+            .marvel-box {
+                padding: 3px 15px;
+            }
+
+            .hobbies-split {
+                grid-template-columns: 1fr;
+            }
+
+            #sound-toggle {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sound Effects Toggle in corner -->
+    <button id="sound-toggle" aria-label="Toggle sound effects">
+        <i class="fas fa-volume-up"></i>
+    </button>
+
+    <!-- 1. INTRO SCREEN -->
+    <div id="intro-screen">
+        <div class="intro-background-effect"></div>
+
+        <!-- Homecoming-style Mechanical Eye Apertures -->
+        <div id="spidey-mask-eyes">
+            <div class="eye-container left-eye-container">
+                <svg class="spidey-eye" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Shadow/Glow definitions -->
+                        <filter id="eye-glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="8" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                        <!-- Inner White Lens Mask -->
+                        <clipPath id="left-eye-clip">
+                            <path d="M 10 70 C 40 10, 160 5, 190 40 C 140 100, 60 110, 10 70 Z" />
+                        </clipPath>
+                    </defs>
+                    <!-- Outer Black Frame -->
+                    <path class="eye-frame" d="M 5 70 C 35 5, 165 0, 195 40 C 145 105, 55 115, 5 70 Z" />
+                    <!-- Inner White Glowing Lens -->
+                    <path class="eye-lens" d="M 12 70 C 40 12, 158 8, 188 40 C 138 98, 58 108, 12 70 Z"
+                        filter="url(#eye-glow)" />
+
+                    <!-- Homecoming Mechanical Apertures -->
+                    <g clip-path="url(#left-eye-clip)">
+                        <!-- Shutter Plate Top -->
+                        <path class="shutter shutter-top" d="M -10 -10 L 210 -10 L 210 50 L -10 50 Z" />
+                        <!-- Shutter Plate Bottom -->
+                        <path class="shutter shutter-bottom" d="M -10 50 L 210 50 L 210 130 L -10 130 Z" />
+                        <!-- Mechanical Grid Lines -->
+                        <line x1="12" y1="70" x2="188" y2="40" class="shutter-line" />
+                    </g>
+                </svg>
+            </div>
+
+            <div class="eye-container right-eye-container">
+                <svg class="spidey-eye" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <clipPath id="right-eye-clip">
+                            <path d="M 190 70 C 160 10, 40 5, 10 40 C 60 100, 140 110, 190 70 Z" />
+                        </clipPath>
+                    </defs>
+                    <!-- Outer Black Frame -->
+                    <path class="eye-frame" d="M 195 70 C 165 5, 35 0, 5 40 C 55 105, 145 115, 195 70 Z" />
+                    <!-- Inner White Glowing Lens -->
+                    <path class="eye-lens" d="M 188 70 C 160 12, 42 8, 12 40 C 62 98, 142 108, 188 70 Z"
+                        filter="url(#eye-glow)" />
+
+                    <!-- Homecoming Mechanical Apertures -->
+                    <g clip-path="url(#right-eye-clip)">
+                        <!-- Shutter Plate Top -->
+                        <path class="shutter shutter-top" d="M -10 -10 L 210 -10 L 210 50 L -10 50 Z" />
+                        <!-- Shutter Plate Bottom -->
+                        <path class="shutter shutter-bottom" d="M -10 50 L 210 50 L 210 130 L -10 130 Z" />
+                        <!-- Mechanical Grid Lines -->
+                        <line x1="188" y1="70" x2="12" y2="40" class="shutter-line" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Prompt to interact -->
+        <div id="tap-instruction" class="pulse-text">CLICK TO INITIALIZE SUIT APERTURE</div>
+
+        <!-- Marvel-inspired Title Card -->
+        <div id="marvel-title-card" class="hidden">
+            <div class="marvel-title-container">
+                <div class="marvel-box">
+                    <span class="marvel-text">SHRUTHI NIRAKSHANA</span>
+                </div>
+            </div>
+            <div class="marvel-sub-title">STUDENT PORTFOLIO // EARTH-616</div>
+            <button id="web-swing-btn">SWING INTO THE PORTAL <i class="fas fa-spider"></i></button>
+        </div>
+    </div>
+
+    <!-- 2. TRANSITION WEB CANVAS -->
+    <canvas id="transition-canvas"></canvas>
+
+    <!-- 3. MAIN PORTFOLIO DASHBOARD -->
+    <main id="portfolio-dashboard" class="hidden">
+        <!-- Space background stars / particle effect -->
+        <canvas id="space-bg"></canvas>
+
+        <header class="dashboard-header">
+            <div class="logo-area">
+                <span class="logo-spider-icon"><i class="fas fa-spider"></i></span>
+                <h1 class="glow-title">MULTIVERSE PROFILE</h1>
+            </div>
+            <nav class="dashboard-nav">
+                <button class="nav-btn active" data-section="bio"><i class="fas fa-user-astronaut"></i> Bio
+                    Portal</button>
+                <button class="nav-btn" data-section="game"><i class="fas fa-gamepad"></i> Web Shooter Game</button>
+            </nav>
+        </header>
+
+        <!-- BIO SECTION -->
+        <section id="bio-section" class="dashboard-grid active">
+
+            <!-- LEFT PROFILE CARD (Portal Frame) -->
+            <div class="card profile-card glow-card">
+                <div class="portal-container">
+                    <div class="portal-ring"></div>
+                    <div class="portal-spark-canvas-container">
+                        <canvas id="portal-sparks"></canvas>
+                    </div>
+                    <div class="profile-img-container">
+                        <img src="profile.jpg" alt="Shruthi Nirakshana" id="profile-pic">
+                        <!-- Spidey Eye mask hover overlay -->
+                        <div class="spidey-overlay">
+                            <div class="glitch-text">SUIT ACTIVATED</div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="profile-name">SHRUTHI NIRAKSHANA</h2>
+                <p class="profile-college"><i class="fas fa-university"></i> R.D. National College of Arts & Science</p>
+                <p class="profile-dept"><i class="fas fa-microchip"></i> B.Sc. AIDS (Artificial Intelligence & Data
+                    Science)</p>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">AIM</span>
+                        <span class="stat-value text-red">IT Field</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">SETTLED IN</span>
+                        <span class="stat-value text-gold">Japan 🇯🇵</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MULTIVERSE PORTAL CARDS (GRID OF DIMENSIONS) -->
+            <div class="multiverse-details-grid">
+
+                <!-- 1. Academic Portal (Marks) -->
+                <div class="card detail-card timeline-card glow-card-red" data-universe="Earth-Mark">
+                    <div class="card-universe-tag">EARTH-MARKS</div>
+                    <h3><i class="fas fa-graduation-cap"></i> Academic Chronology</h3>
+
+                    <div class="marks-list">
+                        <div class="mark-progress-item">
+                            <div class="mark-header">
+                                <span>10th Grade Mark</span>
+                                <span class="mark-number text-red">323 <small>/ 500</small></span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-red" style="width: 64.6%;"></div>
+                            </div>
+                        </div>
+                        <div class="mark-progress-item">
+                            <div class="mark-header">
+                                <span>11th Grade Mark</span>
+                                <span class="mark-number text-blue">322 <small>/ 600</small></span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-blue" style="width: 53.6%;"></div>
+                            </div>
+                        </div>
+                        <div class="mark-progress-item">
+                            <div class="mark-header">
+                                <span>12th Grade Mark</span>
+                                <span class="mark-number text-gold">370 <small>/ 600</small></span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gold" style="width: 61.6%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Heroic Stats (Achievements & NSS Roles) -->
+                <div class="card detail-card hero-roles-card glow-card-blue" data-universe="Earth-616">
+                    <div class="card-universe-tag">EARTH-HERO</div>
+                    <h3><i class="fas fa-award"></i> Ribbons & Affiliations</h3>
+
+                    <ul class="achievements-list">
+                        <li>
+                            <div class="achievement-icon"><i class="fas fa-code-branch"></i></div>
+                            <div class="achievement-info">
+                                <h4>Best Developer Award</h4>
+                                <p>Android Development Wing</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="achievement-icon"><i class="fas fa-shield-halved"></i></div>
+                            <div class="achievement-info">
+                                <h4>NSS Senior Commander</h4>
+                                <p>National Service Scheme Leadership Role</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 3. Talents & Sports (Skills) -->
+                <div class="card detail-card skills-card glow-card-gold" data-universe="Earth-Talents">
+                    <div class="card-universe-tag">EARTH-TALENTS</div>
+                    <h3><i class="fas fa-bolt"></i> Special Talents & Sports</h3>
+
+                    <div class="skills-flex">
+                        <div class="skill-tag"><i class="fas fa-paint-brush"></i> Drawing</div>
+                        <div class="skill-tag cursive-font-trigger"><i class="fas fa-pen-nib"></i> Cursive Handwriting
+                        </div>
+                        <div class="skill-tag"><i class="fas fa-person-falling-burst"></i> Dancing</div>
+                        <div class="skill-tag"><i class="fas fa-table-tennis-paddle-ball"></i> Tennis Player</div>
+                        <div class="skill-tag"><i class="fas fa-basketball"></i> Shuttle Cork Player</div>
+                    </div>
+
+                    <!-- Interactive Cursive Canvas -->
+                    <div class="cursive-writing-container hidden">
+                        <p>Cursive Penmanship Demonstration:</p>
+                        <div class="cursive-writing-text">Shruthi Nirakshana</div>
+                    </div>
+                </div>
+
+                <!-- 4. Explorer Portals (Destinations) -->
+                <div class="card detail-card explorer-card glow-card-red" data-universe="Earth-Explorer">
+                    <div class="card-universe-tag">EARTH-TRAVELS</div>
+                    <h3><i class="fas fa-compass"></i> Favorite Explorer Destinations</h3>
+
+                    <div class="destinations-grid">
+                        <div class="destination-item" data-dest="japan">
+                            <span class="dest-flag">🇯🇵</span>
+                            <span class="dest-name">Japan</span>
+                        </div>
+                        <div class="destination-item" data-dest="maldives">
+                            <span class="dest-flag">🇲🇻</span>
+                            <span class="dest-name">Maldives</span>
+                        </div>
+                        <div class="destination-item" data-dest="europe">
+                            <span class="dest-flag">🇪🇺</span>
+                            <span class="dest-name">Europe</span>
+                        </div>
+                        <div class="destination-item" data-dest="switzerland">
+                            <span class="dest-flag">🇨🇭</span>
+                            <span class="dest-name">Switzerland</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Hobbies, Books, Languages -->
+                <div class="card detail-card hobbies-card glow-card-blue" data-universe="Earth-Interests">
+                    <div class="card-universe-tag">EARTH-INTERESTS</div>
+                    <h3><i class="fas fa-heart"></i> Hobbies & Lingual Skills</h3>
+
+                    <div class="hobbies-split">
+                        <div class="hobbies-left">
+                            <h4>Languages</h4>
+                            <div class="langs-row">
+                                <span class="lang-pill"><i class="fas fa-language"></i> Tamil</span>
+                                <span class="lang-pill"><i class="fas fa-language"></i> English</span>
+                                <span class="lang-pill"><i class="fas fa-language"></i> Japanese (日本語)</span>
+                            </div>
+                        </div>
+                        <div class="hobbies-right">
+                            <h4>Interests</h4>
+                            <ul class="hobby-list">
+                                <li><i class="fas fa-tv text-red"></i> Watching Anime</li>
+                                <li><i class="fas fa-book-open text-blue"></i> Reading Books</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- GAME SECTION -->
+        <section id="game-section" class="dashboard-grid">
+            <div class="card game-wrapper-card glow-card">
+                <div class="game-header">
+                    <h2><i class="fas fa-spider"></i> WEB SHOOTER: MULTIVERSE DEFENSE</h2>
+                    <p>Villains are invading the dimensions! Click/Tap on the villains to shoot webs and neutralize
+                        them. Don't let them breach the dimensional barrier!</p>
+                </div>
+
+                <!-- Web Shooter Game Panel -->
+                <div class="game-container-panel">
+                    <div class="web-color-selector">
+                        <span class="color-label">CHOOSE WEB COLOR:</span>
+                        <div class="web-colors">
+                            <button class="color-btn active" data-color="#ffffff"
+                                style="background: #ffffff; border: 2px solid #ff0000;"
+                                title="Classic Spidey White"></button>
+                            <button class="color-btn" data-color="#d4af37" style="background: #d4af37;"
+                                title="Iron Spider Gold"></button>
+                            <button class="color-btn" data-color="#111111"
+                                style="background: #111111; border: 1px solid #555555;" title="Symbiote Black"></button>
+                            <button class="color-btn" data-color="#ff69b4" style="background: #ff69b4;"
+                                title="Spider-Gwen Pink"></button>
+                            <button class="color-btn" data-color="#00ffff" style="background: #00ffff;"
+                                title="Multiverse Glitch Cyan"></button>
+                        </div>
+                    </div>
+
+                    <div class="game-canvas-container">
+                        <canvas id="game-canvas" width="800" height="500"></canvas>
+
+                        <!-- Start / Game Over overlay -->
+                        <div id="game-overlay">
+                            <div class="overlay-content">
+                                <h3 id="overlay-title">THWIP TO START!</h3>
+                                <p id="overlay-desc">Defend the grid from Venom, Goblin & Doc Ock.</p>
+                                <button id="start-game-btn" class="web-btn">START DEPLOYMENT</button>
+                            </div>
+                        </div>
+
+                        <!-- Web shooter HUD -->
+                        <div class="game-hud">
+                            <div class="hud-item">SCORE: <span id="hud-score" class="text-red">0</span></div>
+                            <div class="hud-item">BARRIER HEALTH: <span id="hud-health" class="text-gold">100%</span>
+                            </div>
+                            <div class="hud-item">LEVEL: <span id="hud-level" class="text-blue">1</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JAVASCRIPT LOGIC (Combined inside single script tag) -->
+    <script>
+        // Sound state
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        // Initialize Audio Context
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Sound Synthesizers using Web Audio API
+        const sounds = {
+            lensFocus: () => {
+                if (!soundEnabled) return;
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.4);
+
+                gainNode.gain.setValueAtTime(0.15, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+
+                const noiseOsc = audioCtx.createOscillator();
+                const noiseGain = audioCtx.createGain();
+                noiseOsc.type = 'sine';
+                noiseOsc.frequency.setValueAtTime(2000, now);
+                noiseOsc.frequency.linearRampToValueAtTime(800, now + 0.25);
+                noiseGain.gain.setValueAtTime(0.05, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                noiseOsc.connect(noiseGain);
+                noiseGain.connect(audioCtx.destination);
+                noiseOsc.start(now);
+                noiseOsc.stop(now + 0.25);
+            },
+
+            thwip: () => {
+                if (!soundEnabled) return;
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                const bufferSize = audioCtx.sampleRate * 0.15;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(1000, now);
+                filter.frequency.exponentialRampToValueAtTime(5000, now + 0.12);
+                filter.Q.value = 5.0;
+
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+                noise.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                noise.start(now);
+                noise.stop(now + 0.15);
+
+                const zipOsc = audioCtx.createOscillator();
+                const zipGain = audioCtx.createGain();
+                zipOsc.type = 'sawtooth';
+                zipOsc.frequency.setValueAtTime(120, now);
+                zipOsc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+
+                zipGain.gain.setValueAtTime(0.08, now);
+                zipGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+                zipOsc.connect(zipGain);
+                zipGain.connect(audioCtx.destination);
+                zipOsc.start(now);
+                zipOsc.stop(now + 0.1);
+            },
+
+            portalSpark: (freq = 600, duration = 0.1) => {
+                if (!soundEnabled) return;
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now);
+                osc.frequency.linearRampToValueAtTime(freq * 1.5, now + duration);
+
+                gainNode.gain.setValueAtTime(0.02, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + duration);
+            },
+
+            hit: () => {
+                if (!soundEnabled) return;
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.frequency.setValueAtTime(250, now);
+                osc.frequency.exponentialRampToValueAtTime(60, now + 0.15);
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.18);
+
+                const snap = audioCtx.createOscillator();
+                const snapGain = audioCtx.createGain();
+                snap.type = 'triangle';
+                snap.frequency.setValueAtTime(600, now);
+                snap.frequency.exponentialRampToValueAtTime(200, now + 0.08);
+                snapGain.gain.setValueAtTime(0.2, now);
+                snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                snap.connect(snapGain);
+                snapGain.connect(audioCtx.destination);
+                snap.start(now);
+                snap.stop(now + 0.08);
+            },
+
+            gameOver: () => {
+                if (!soundEnabled) return;
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.8);
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.8);
+            }
+        };
+
+        // Toggle Audio controls
+        const soundToggle = document.getElementById('sound-toggle');
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+                initAudio();
+            } else {
+                soundToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        });
+
+        /* INTRO SCREEN - MECHANICAL EYE ANIMATION */
+        const maskEyes = document.getElementById('spidey-mask-eyes');
+        const tapInstruction = document.getElementById('tap-instruction');
+        const marvelTitle = document.getElementById('marvel-title-card');
+        const webSwingBtn = document.getElementById('web-swing-btn');
+        const introScreen = document.getElementById('intro-screen');
+        let eyeState = 'closed';
+
+        maskEyes.classList.add('closed');
+
+        maskEyes.addEventListener('click', (e) => {
+            if (eyeState === 'closed') {
+                eyeState = 'squinting';
+                tapInstruction.innerText = "CALIBRATING APERTURES...";
+                sounds.lensFocus();
+
+                maskEyes.classList.remove('closed');
+                maskEyes.classList.add('squint');
+
+                setTimeout(() => {
+                    eyeState = 'open';
+                    maskEyes.classList.remove('squint');
+                    maskEyes.classList.add('open');
+                    tapInstruction.classList.add('hidden');
+                    sounds.lensFocus();
+
+                    setTimeout(() => {
+                        marvelTitle.classList.remove('hidden');
+                        setTimeout(() => {
+                            marvelTitle.classList.add('visible');
+                            sounds.thwip();
+                        }, 100);
+                    }, 800);
+                }, 600);
+            }
+        });
+
+        /* TRANSITION WEB ANIMATION CANVAS */
+        const transCanvas = document.getElementById('transition-canvas');
+        const transCtx = transCanvas.getContext('2d');
+
+        function resizeTransCanvas() {
+            transCanvas.width = window.innerWidth;
+            transCanvas.height = window.innerHeight;
+        }
+        resizeTransCanvas();
+        window.addEventListener('resize', resizeTransCanvas);
+
+        class SpiderWebTransition {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.active = false;
+                this.centerX = window.innerWidth / 2;
+                this.centerY = window.innerHeight / 2;
+                this.progress = 0;
+                this.radialLines = 14;
+                this.maxRadius = Math.max(window.innerWidth, window.innerHeight) * 1.2;
+                this.rings = 10;
+                this.state = 'shoot';
+            }
+
+            start(startX, startY) {
+                this.reset();
+                this.centerX = startX;
+                this.centerY = startY;
+                this.active = true;
+            }
+
+            update() {
+                if (!this.active) return;
+
+                if (this.state === 'shoot') {
+                    this.progress += 0.04;
+                    if (this.progress >= 1) {
+                        this.progress = 1;
+                        this.state = 'hold';
+                        setTimeout(() => {
+                            this.state = 'pull';
+                        }, 300);
+                    }
+                } else if (this.state === 'pull') {
+                    this.progress -= 0.05;
+                    if (this.progress <= 0) {
+                        this.progress = 0;
+                        this.active = false;
+                    }
+                }
+            }
+
+            draw(ctx) {
+                if (!this.active) return;
+
+                ctx.save();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+                ctx.shadowColor = 'rgba(230, 36, 41, 0.8)';
+                ctx.shadowBlur = 15;
+                ctx.lineWidth = 3;
+
+                const currentRadius = this.maxRadius * this.progress;
+
+                for (let i = 0; i < this.radialLines; i++) {
+                    const angle = (i * 2 * Math.PI) / this.radialLines;
+                    const endX = this.centerX + Math.cos(angle) * currentRadius;
+                    const endY = this.centerY + Math.sin(angle) * currentRadius;
+                    ctx.beginPath();
+                    ctx.moveTo(this.centerX, this.centerY);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                }
+
+                ctx.lineWidth = 1.8;
+                const ringSpacing = currentRadius / this.rings;
+                for (let r = 1; r <= this.rings; r++) {
+                    const rRadius = r * ringSpacing;
+                    ctx.beginPath();
+
+                    for (let i = 0; i <= this.radialLines; i++) {
+                        const angle = (i * 2 * Math.PI) / this.radialLines;
+                        const nextAngle = ((i + 1) * 2 * Math.PI) / this.radialLines;
+
+                        const x1 = this.centerX + Math.cos(angle) * rRadius;
+                        const y1 = this.centerY + Math.sin(angle) * rRadius;
+                        const x2 = this.centerX + Math.cos(nextAngle) * rRadius;
+                        const y2 = this.centerY + Math.sin(nextAngle) * rRadius;
+
+                        const midAngle = angle + (nextAngle - angle) / 2;
+                        const sagRadius = rRadius * 0.9;
+                        const cx = this.centerX + Math.cos(midAngle) * sagRadius;
+                        const cy = this.centerY + Math.sin(midAngle) * sagRadius;
+
+                        if (i === 0) ctx.moveTo(x1, y1);
+                        ctx.quadraticCurveTo(cx, cy, x2, y2);
+                    }
+                    ctx.stroke();
+                }
+
+                if (this.state === 'hold' || (this.state === 'shoot' && this.progress > 0.8)) {
+                    ctx.fillStyle = 'rgba(5, 5, 8, ' + ((this.progress - 0.7) * 3.33) + ')';
+                    if (this.state === 'hold') ctx.fillStyle = 'rgba(5, 5, 8, 1)';
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath();
+                    ctx.arc(this.centerX, this.centerY, currentRadius, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+
+                if (this.state === 'pull') {
+                    ctx.fillStyle = 'rgba(5, 5, 8, ' + this.progress + ')';
+                    ctx.shadowBlur = 0;
+                    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+                }
+
+                ctx.restore();
+            }
+        }
+
+        const webTransition = new SpiderWebTransition();
+
+        function animTransition() {
+            transCtx.clearRect(0, 0, transCanvas.width, transCanvas.height);
+
+            if (webTransition.active) {
+                webTransition.update();
+                webTransition.draw(transCtx);
+
+                if (webTransition.state === 'hold' && !dashboardVisible) {
+                    revealDashboard();
+                }
+
+                requestAnimationFrame(animTransition);
+            }
+        }
+
+        let dashboardVisible = false;
+        const dashboard = document.getElementById('portfolio-dashboard');
+
+        webSwingBtn.addEventListener('click', (e) => {
+            sounds.thwip();
+            maskEyes.classList.add('eye-zoom-animation');
+
+            setTimeout(() => {
+                webTransition.start(e.clientX, e.clientY);
+                animTransition();
+            }, 100);
+        });
+
+        function revealDashboard() {
+            dashboardVisible = true;
+            introScreen.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            setTimeout(() => {
+                dashboard.classList.add('visible');
+                initSpaceBg();
+                initPortalSparks();
+            }, 50);
+        }
+
+        /* SPACE PARALLAX BACKGROUND CANVAS */
+        const spaceCanvas = document.getElementById('space-bg');
+        const spaceCtx = spaceCanvas.getContext('2d');
+        let stars = [];
+        const starCount = 150;
+        let mouseX = 0;
+        let mouseY = 0;
+
+        function resizeSpaceCanvas() {
+            spaceCanvas.width = window.innerWidth;
+            spaceCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) / 35;
+            mouseY = (e.clientY - window.innerHeight / 2) / 35;
+        });
+
+        function initSpaceBg() {
+            resizeSpaceCanvas();
+            window.addEventListener('resize', resizeSpaceCanvas);
+
+            stars = [];
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * spaceCanvas.width,
+                    y: Math.random() * spaceCanvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    speed: Math.random() * 0.2 + 0.05,
+                    parallaxFactor: Math.random() * 0.6 + 0.4,
+                    alpha: Math.random(),
+                    pulse: Math.random() * 0.02 + 0.005
+                });
+            }
+
+            animateSpaceBg();
+        }
+
+        function animateSpaceBg() {
+            if (!dashboardVisible) return;
+            spaceCtx.fillStyle = '#030307';
+            spaceCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+
+            const gradient = spaceCtx.createRadialGradient(
+                spaceCanvas.width / 2 + mouseX, spaceCanvas.height / 2 + mouseY, 100,
+                spaceCanvas.width / 2, spaceCanvas.height / 2, spaceCanvas.width
+            );
+            gradient.addColorStop(0, 'rgba(13, 19, 38, 0.4)');
+            gradient.addColorStop(0.5, 'rgba(5, 5, 8, 0.9)');
+            gradient.addColorStop(1, '#020204');
+            spaceCtx.fillStyle = gradient;
+            spaceCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+
+            stars.forEach(star => {
+                const sX = star.x - mouseX * star.parallaxFactor;
+                const sY = star.y - mouseY * star.parallaxFactor;
+
+                star.alpha += star.pulse;
+                if (star.alpha > 1 || star.alpha < 0.2) {
+                    star.pulse = -star.pulse;
+                }
+
+                spaceCtx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+                spaceCtx.beginPath();
+                spaceCtx.arc(sX, sY, star.size, 0, Math.PI * 2);
+                spaceCtx.fill();
+
+                if (star.size > 2 && Math.random() > 0.98) {
+                    spaceCtx.fillStyle = 'rgba(230, 36, 41, 0.4)';
+                    spaceCtx.fillRect(sX, sY, 30 * star.parallaxFactor, 1);
+                }
+
+                star.x += star.speed;
+                if (star.x > spaceCanvas.width) star.x = 0;
+            });
+
+            requestAnimationFrame(animateSpaceBg);
+        }
+
+        /* DYNAMIC SPARK PORTAL FRAME CANVAS */
+        const sparkCanvas = document.getElementById('portal-sparks');
+        const sparkCtx = sparkCanvas.getContext('2d');
+        let sparks = [];
+        const maxSparks = 200;
+
+        function resizeSparkCanvas() {
+            const parent = sparkCanvas.parentElement;
+            sparkCanvas.width = parent.clientWidth;
+            sparkCanvas.height = parent.clientHeight;
+        }
+
+        class PortalSpark {
+            constructor(cx, cy, r) {
+                this.cx = cx;
+                this.cy = cy;
+                this.r = r;
+                this.reset();
+            }
+
+            reset() {
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = Math.random() * 0.04 + 0.02;
+                this.radiusOffset = Math.random() * 8 - 4;
+                this.x = this.cx + Math.cos(this.angle) * (this.r + this.radiusOffset);
+                this.y = this.cy + Math.sin(this.angle) * (this.r + this.radiusOffset);
+
+                this.vx = (Math.random() - 0.5) * 1.5 + Math.cos(this.angle) * 1.8;
+                this.vy = (Math.random() - 0.5) * 1.5 + Math.sin(this.angle) * 1.8;
+
+                this.life = 1;
+                this.decay = Math.random() * 0.03 + 0.02;
+                this.color = Math.random() > 0.4 ? '#ffd700' : '#ff4500';
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.angle += this.speed;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                if (this.life <= 0) {
+                    this.reset();
+                    if (soundEnabled && Math.random() > 0.99) {
+                        sounds.portalSpark(800 + Math.random() * 400, 0.05);
+                    }
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 6;
+                ctx.globalAlpha = this.life;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initPortalSparks() {
+            resizeSparkCanvas();
+            window.addEventListener('resize', resizeSparkCanvas);
+
+            const cx = sparkCanvas.width / 2;
+            const cy = sparkCanvas.height / 2;
+            const radius = sparkCanvas.width * 0.35;
+
+            sparks = [];
+            for (let i = 0; i < maxSparks; i++) {
+                sparks.push(new PortalSpark(cx, cy, radius));
+            }
+
+            animatePortalSparks();
+        }
+
+        function animatePortalSparks() {
+            if (!dashboardVisible) return;
+            sparkCtx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+
+            sparks.forEach(spark => {
+                spark.update();
+                spark.draw(sparkCtx);
+            });
+
+            requestAnimationFrame(animatePortalSparks);
+        }
+
+        /* CURSIVE WRITING SHOWCASE TRIGGERS */
+        const cursiveTrigger = document.querySelector('.cursive-font-trigger');
+        const cursiveContainer = document.querySelector('.cursive-writing-container');
+
+        cursiveTrigger.addEventListener('click', () => {
+            cursiveContainer.classList.toggle('hidden');
+            if (!cursiveContainer.classList.contains('hidden')) {
+                const element = cursiveContainer.querySelector('.cursive-writing-text');
+                element.style.animation = 'none';
+                element.offsetHeight;
+                element.style.animation = 'drawCursive 2s ease-out forwards';
+            }
+        });
+
+        /* NAVIGATION TOGGLE BETWEEN BIO AND GAME */
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const bioSection = document.getElementById('bio-section');
+        const gameSection = document.getElementById('game-section');
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sounds.thwip();
+                navButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const target = btn.getAttribute('data-section');
+                if (target === 'bio') {
+                    gameSection.classList.remove('active');
+                    setTimeout(() => {
+                        gameSection.style.display = 'none';
+                        bioSection.style.display = 'grid';
+                        setTimeout(() => bioSection.classList.add('active'), 50);
+                    }, 300);
+                } else {
+                    bioSection.classList.remove('active');
+                    setTimeout(() => {
+                        bioSection.style.display = 'none';
+                        gameSection.style.display = 'grid';
+                        setTimeout(() => {
+                            gameSection.classList.add('active');
+                            resizeGameCanvas();
+                        }, 50);
+                    }, 300);
+                }
+            });
+        });
+
+        /* WEB-SHOOTER CANVAS MINI-GAME */
+        const gameCanvas = document.getElementById('game-canvas');
+        const gameCtx = gameCanvas.getContext('2d');
+        const gameOverlay = document.getElementById('game-overlay');
+        const startBtn = document.getElementById('start-game-btn');
+        const overlayTitle = document.getElementById('overlay-title');
+        const overlayDesc = document.getElementById('overlay-desc');
+        const scoreHud = document.getElementById('hud-score');
+        const healthHud = document.getElementById('hud-health');
+        const levelHud = document.getElementById('hud-level');
+        const webColors = document.querySelectorAll('.web-colors .color-btn');
+
+        let gameRunning = false;
+        let gameScore = 0;
+        let barrierHealth = 100;
+        let gameLevel = 1;
+        let villains = [];
+        let webs = [];
+        let particles = [];
+        let activeWebColor = '#ffffff';
+        let spawnInterval = 1800;
+        let lastSpawn = 0;
+
+        webColors.forEach(btn => {
+            btn.addEventListener('click', () => {
+                webColors.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeWebColor = btn.getAttribute('data-color');
+                sounds.thwip();
+            });
+        });
+
+        function resizeGameCanvas() {
+            const rect = gameCanvas.getBoundingClientRect();
+        }
+
+        const villainTypes = [
+            {
+                name: 'Green Goblin',
+                color: '#2e8b57',
+                eyeColor: '#ff4500',
+                size: 32,
+                speed: 1.6,
+                scoreValue: 100,
+                draw: (ctx, x, y, size) => {
+                    ctx.fillStyle = '#4a2574';
+                    ctx.beginPath();
+                    ctx.moveTo(x - size, y + size / 2);
+                    ctx.quadraticCurveTo(x, y - size * 1.5, x + size, y + size / 2);
+                    ctx.lineTo(x + size * 0.8, y + size * 0.9);
+                    ctx.lineTo(x - size * 0.8, y + size * 0.9);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#39a845';
+                    ctx.beginPath();
+                    ctx.arc(x, y + size * 0.1, size * 0.7, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(x - size * 0.3, y + size * 0.6);
+                    ctx.lineTo(x, y + size * 1.2);
+                    ctx.lineTo(x + size * 0.3, y + size * 0.6);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath();
+                    ctx.ellipse(x - size * 0.3, y, size * 0.15, size * 0.22, Math.PI / 4, 0, Math.PI * 2);
+                    ctx.ellipse(x + size * 0.3, y, size * 0.15, size * 0.22, -Math.PI / 4, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#000000';
+                    ctx.beginPath();
+                    ctx.ellipse(x - size * 0.3, y, size * 0.05, size * 0.1, Math.PI / 4, 0, Math.PI * 2);
+                    ctx.ellipse(x + size * 0.3, y, size * 0.05, size * 0.1, -Math.PI / 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            },
+            {
+                name: 'Venom',
+                color: '#111115',
+                eyeColor: '#ffffff',
+                size: 34,
+                speed: 1.2,
+                scoreValue: 150,
+                draw: (ctx, x, y, size) => {
+                    ctx.fillStyle = '#0b0c10';
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, size * 0.9, size * 1.1, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#324b7a';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, size * 0.9, size * 1.1, 0, Math.PI * 1.1, Math.PI * 1.5);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.moveTo(x - size * 0.7, y - size * 0.4);
+                    ctx.quadraticCurveTo(x - size * 0.4, y - size * 0.8, x - size * 0.1, y - size * 0.2);
+                    ctx.quadraticCurveTo(x - size * 0.3, y + size * 0.3, x - size * 0.7, y - size * 0.4);
+                    ctx.moveTo(x + size * 0.7, y - size * 0.4);
+                    ctx.quadraticCurveTo(x + size * 0.4, y - size * 0.8, x + size * 0.1, y - size * 0.2);
+                    ctx.quadraticCurveTo(x + size * 0.3, y + size * 0.3, x + size * 0.7, y - size * 0.4);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#ff3338';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.moveTo(x - size * 0.6, y + size * 0.4);
+                    ctx.quadraticCurveTo(x, y + size * 0.85, x + size * 0.6, y + size * 0.4);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#ffffff';
+                    for (let i = -3; i <= 3; i++) {
+                        const tx = x + (i * size * 0.14);
+                        const ty = y + size * 0.5 + Math.abs(i) * 1.5;
+                        ctx.beginPath();
+                        ctx.moveTo(tx - 3, ty);
+                        ctx.lineTo(tx, ty + 7);
+                        ctx.lineTo(tx + 3, ty);
+                        ctx.fill();
+                    }
+                }
+            },
+            {
+                name: 'Doctor Octopus',
+                color: '#445533',
+                eyeColor: '#ffcc00',
+                size: 30,
+                speed: 1.8,
+                scoreValue: 120,
+                draw: (ctx, x, y, size) => {
+                    ctx.strokeStyle = '#708090';
+                    ctx.lineWidth = 5;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.bezierCurveTo(x - size * 2.5, y - size * 1.5, x - size * 1.5, y + size * 2, x - size * 1.6, y + size * 0.2);
+                    ctx.moveTo(x, y);
+                    ctx.bezierCurveTo(x + size * 2.5, y - size * 1.5, x + size * 1.5, y + size * 2, x + size * 1.6, y + size * 0.2);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#3a4f66';
+                    ctx.beginPath();
+                    ctx.arc(x - size * 1.6, y + size * 0.2, 7, 0, Math.PI * 2);
+                    ctx.arc(x + size * 1.6, y + size * 0.2, 7, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#1e3f20';
+                    ctx.beginPath();
+                    ctx.arc(x, y + size * 0.4, size * 0.8, 0, Math.PI, true);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#ffd5b4';
+                    ctx.beginPath();
+                    ctx.arc(x, y - size * 0.1, size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#111111';
+                    ctx.beginPath();
+                    ctx.arc(x - size * 0.22, y - size * 0.1, size * 0.2, 0, Math.PI * 2);
+                    ctx.arc(x + size * 0.22, y - size * 0.1, size * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#ffd700';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.moveTo(x - size * 0.1, y - size * 0.15);
+                    ctx.lineTo(x + size * 0.1, y - size * 0.15);
+                    ctx.stroke();
+                }
+            }
+        ];
+
+        class Villain {
+            constructor() {
+                const type = villainTypes[Math.floor(Math.random() * villainTypes.length)];
+                this.type = type;
+                this.size = type.size;
+                this.speed = type.speed * (1 + (gameLevel - 1) * 0.15);
+
+                this.x = Math.random() * (gameCanvas.width - this.size * 2) + this.size;
+                this.y = -this.size;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = this.speed;
+                this.webbed = false;
+                this.webTime = 0;
+                this.opacity = 1;
+                this.scale = 1;
+            }
+
+            update() {
+                if (this.webbed) {
+                    this.vy = 0.5;
+                    this.vx = 0;
+                    this.y += this.vy;
+                    this.webTime++;
+
+                    if (this.webTime > 30) {
+                        this.opacity -= 0.05;
+                        this.scale -= 0.03;
+                        if (this.opacity <= 0) return false;
+                    }
+                } else {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x - this.size < 0 || this.x + this.size > gameCanvas.width) {
+                        this.vx = -this.vx;
+                    }
+                }
+                return true;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                this.type.draw(ctx, this.x, this.y, this.size * this.scale);
+
+                if (this.webbed) {
+                    ctx.strokeStyle = activeWebColor;
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    for (let r = 5; r < this.size; r += 7) {
+                        ctx.arc(this.x, this.y, r * this.scale, 0, Math.PI * 2);
+                    }
+                    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
+                        ctx.moveTo(this.x, this.y);
+                        ctx.lineTo(this.x + Math.cos(angle) * this.size * this.scale, this.y + Math.sin(angle) * this.size * this.scale);
+                    }
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
+        class WebShot {
+            constructor(targetX, targetY) {
+                this.startX = gameCanvas.width / 2;
+                this.startY = gameCanvas.height;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.x = this.startX;
+                this.y = this.startY;
+                this.speed = 18;
+                this.active = true;
+                this.progress = 0;
+                this.color = activeWebColor;
+            }
+
+            update() {
+                this.progress += 0.08;
+                if (this.progress >= 1) {
+                    this.progress = 1;
+                    this.active = false;
+                    createWebBurst(this.targetX, this.targetY, this.color);
+                    checkImpact(this.targetX, this.targetY);
+                }
+                this.x = this.startX + (this.targetX - this.startX) * this.progress;
+                this.y = this.startY + (this.targetY - this.startY) * this.progress;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 3.5;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.moveTo(this.startX, this.startY);
+                ctx.lineTo(this.x, this.y);
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class GameParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.vx = (Math.random() - 0.5) * 6;
+                this.vy = (Math.random() - 0.5) * 6;
+                this.size = Math.random() * 3 + 1;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.05 + 0.03;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+                return this.alpha > 0;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function createWebBurst(x, y, color) {
+            sounds.hit();
+            for (let i = 0; i < 20; i++) {
+                particles.push(new GameParticle(x, y, color));
+            }
+        }
+
+        function checkImpact(x, y) {
+            villains.forEach(v => {
+                if (!v.webbed) {
+                    const dist = Math.hypot(v.x - x, v.y - y);
+                    if (dist < v.size + 15) {
+                        v.webbed = true;
+                        gameScore += v.type.scoreValue;
+                        scoreHud.innerText = gameScore;
+
+                        if (gameScore > gameLevel * 800) {
+                            gameLevel++;
+                            levelHud.innerText = gameLevel;
+                            spawnInterval = Math.max(800, spawnInterval - 200);
+                        }
+                    }
+                }
+            });
+        }
+
+        gameCanvas.addEventListener('mousedown', (e) => {
+            if (!gameRunning) return;
+
+            const rect = gameCanvas.getBoundingClientRect();
+            const scaleX = gameCanvas.width / rect.width;
+            const scaleY = gameCanvas.height / rect.height;
+
+            const clickX = (e.clientX - rect.left) * scaleX;
+            const clickY = (e.clientY - rect.top) * scaleY;
+
+            sounds.thwip();
+            webs.push(new WebShot(clickX, clickY));
+        });
+
+        startBtn.addEventListener('click', () => {
+            initAudio();
+            startGame();
+        });
+
+        function startGame() {
+            gameRunning = true;
+            gameScore = 0;
+            barrierHealth = 100;
+            gameLevel = 1;
+            villains = [];
+            webs = [];
+            particles = [];
+            spawnInterval = 1800;
+
+            scoreHud.innerText = 0;
+            healthHud.innerText = '100%';
+            levelHud.innerText = 1;
+
+            gameOverlay.style.opacity = 0;
+            setTimeout(() => {
+                gameOverlay.style.display = 'none';
+            }, 300);
+
+            sounds.thwip();
+            animateGame();
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            sounds.gameOver();
+
+            overlayTitle.innerText = "BARRIER BREACHED!";
+            overlayDesc.innerText = `The villains broke the multiverse grid. Your Final Score: ${gameScore}`;
+            startBtn.innerText = "RESTART DEPLOYMENT";
+
+            gameOverlay.style.display = 'flex';
+            setTimeout(() => {
+                gameOverlay.style.opacity = 1;
+            }, 50);
+        }
+
+        function animateGame() {
+            if (!gameRunning) return;
+
+            gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            gameCtx.strokeStyle = 'rgba(230, 36, 41, 0.05)';
+            gameCtx.lineWidth = 1;
+            const gridSpacing = 40;
+            for (let x = 0; x < gameCanvas.width; x += gridSpacing) {
+                gameCtx.beginPath();
+                gameCtx.moveTo(x, 0);
+                gameCtx.lineTo(x, gameCanvas.height);
+                gameCtx.stroke();
+            }
+            for (let y = 0; y < gameCanvas.height; y += gridSpacing) {
+                gameCtx.beginPath();
+                gameCtx.moveTo(0, y);
+                gameCtx.lineTo(gameCanvas.width, y);
+                gameCtx.stroke();
+            }
+
+            const now = Date.now();
+            if (now - lastSpawn > spawnInterval) {
+                villains.push(new Villain());
+                lastSpawn = now;
+            }
+
+            webs = webs.filter(web => {
+                web.update();
+                web.draw(gameCtx);
+                return web.active;
+            });
+
+            particles = particles.filter(p => {
+                const active = p.update();
+                if (active) p.draw(gameCtx);
+                return active;
+            });
+
+            villains = villains.filter(v => {
+                const alive = v.update();
+                if (alive) {
+                    v.draw(gameCtx);
+
+                    if (v.y > gameCanvas.height + v.size) {
+                        if (!v.webbed) {
+                            barrierHealth -= 15;
+                            if (barrierHealth < 0) barrierHealth = 0;
+                            healthHud.innerText = `${barrierHealth}%`;
+
+                            healthHud.parentElement.style.animation = 'none';
+                            healthHud.parentElement.offsetHeight;
+                            healthHud.parentElement.style.animation = 'textPulse 0.4s 2';
+
+                            if (barrierHealth <= 0) {
+                                gameOver();
+                                return false;
+                            }
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            });
+
+            gameCtx.save();
+            gameCtx.fillStyle = 'rgba(230, 36, 41, 0.9)';
+            gameCtx.shadowColor = 'rgba(230, 36, 41, 0.8)';
+            gameCtx.shadowBlur = 12;
+            gameCtx.beginPath();
+            gameCtx.arc(gameCanvas.width / 2, gameCanvas.height + 15, 30, Math.PI, 0);
+            gameCtx.fill();
+
+            gameCtx.fillStyle = '#ffffff';
+            gameCtx.beginPath();
+            gameCtx.arc(gameCanvas.width / 2, gameCanvas.height - 2, 4, 0, Math.PI * 2);
+            gameCtx.fill();
+            gameCtx.restore();
+
+            requestAnimationFrame(animateGame);
+        }
+    </script>
+</body>
+
+</html>
